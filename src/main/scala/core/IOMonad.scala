@@ -1,7 +1,6 @@
 package core
 
 sealed trait IOMonad[A] {
-  def getLineNumber: Int
   def evaluate: A
 
   def flatMap[B](f: A => IOMonad[B]): IOMonad[B] = {
@@ -9,13 +8,12 @@ sealed trait IOMonad[A] {
   }
 
   def map[B](f: A => B): IOMonad[B]= {
-    IOMonad (f(evaluate), getLineNumber)
+    IOMonad (f(evaluate))
   }
 }
 
 object IOMonad {
-  def apply[A](a: => A, lineNumber: Int = -1): IOMonad[A] = new IOMonad[A] {
+  def apply[A](a: => A): IOMonad[A] = new IOMonad[A] {
     def evaluate = a
-    def getLineNumber = lineNumber
   }
 }
