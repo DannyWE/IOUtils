@@ -2,6 +2,8 @@ name := "IOUtils"
 
 version := "1.0"
 
+organization := "com.danny"
+
 scalaVersion := "2.10.4"
 
 libraryDependencies ++= Seq(

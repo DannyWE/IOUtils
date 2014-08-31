@@ -3,6 +3,7 @@ import java.io.{FileReader, BufferedReader, File}
 import java.util.Date
 
 import app.CsvUtils
+import javax.validation.ConstraintViolation
 import org.hibernate.validator.constraints.NotEmpty
 import org.scalatest.FunSuite
 import core.ConsumerOperation.drop
@@ -34,7 +35,9 @@ class CsvIntegrationTest extends FunSuite {
 
     val header = CsvUtils.parse(file, f)
 
-    assert(header.head.manufacturer == "Manufacturer")
+    assert(header.head._2.manufacturer == "Manufacturer")
+    assert(header.head._1 == 1)
+
   }
 
 
@@ -44,10 +47,19 @@ class CsvIntegrationTest extends FunSuite {
 
     def f(x: StringArray): ValueObject = new ValueObject(x(0), x(1), x(2), x(3), x(4), x(5))
 
-    val containers = CsvUtils.parse(file, f, drop(1)).right.get
+    val containers = CsvUtils.parse(file, f, drop(3)).right.get
 
-    println(containers.size)
+    println(containers.head._1)
+    println(containers(1)._1)
+    println(containers(1)._2.head.getPropertyPath.toString)
 
+    
+    val row: (Int, Set[ConstraintViolation[ValueObject]]) = containers(3)
+
+    assert(row._1 == 7)
+    assert(row._2.size == 1)
+    assert(row._2.head.getPropertyPath.toString == "expiredDate")
+    assert(row._2.head.getMessage == "may not be empty")
 
   }
 

@@ -16,22 +16,21 @@ object CsvUtils {
 
   val validator: Validator = Validation.buildDefaultValidatorFactory.getValidator
 
-  def parse[T](file: File, f: Array[String] => T, condition: Consumer[Array[String],Unit]): Either[Seq[T], Set[ConstraintViolation[T]]] = {
+  def parse[T](file: File, f: Array[String] => T, condition: Consumer[Array[String],Unit]): Either[Seq[T], Seq[(Int, Set[ConstraintViolation[T]])]] = {
 
-    val voSeq: Seq[T] = CsvIO.enumerateFile(file, mapWithFilter(f, condition)).evaluate.run
+    val voSeq: Seq[(Int, T)] = CsvIO.enumerateFile(file, mapWithFilter(f, condition)).evaluate.run
 
-    val validationSeq: Set[ConstraintViolation[T]] = voSeq
-      .map(validator.validate(_).toSet)
-      .reduceLeft[Set[ConstraintViolation[T]]](_ ++ _)
+    val validationSeq: Seq[(Int, Set[ConstraintViolation[T]])] = voSeq
+      .map(t => (t._1, validator.validate(t._2).toSet))
 
     validationSeq match {
-      case x: Set[ConstraintViolation[T]] if x.isEmpty => Left(voSeq)
+      case x: Seq[(Int, ConstraintViolation[T])] if x.filter(p => ! p._2.isEmpty).isEmpty => Left(voSeq.map(_._2))
       case _ => Right(validationSeq)
     }
 
   }
 
-  def parse[T](file: File, f: Array[String] => T): Seq[T] = {
+  def parse[T](file: File, f: Array[String] => T): Seq[(Int, T)] = {
 
     CsvIO.enumerateFile(file, map(f)).evaluate.run
 

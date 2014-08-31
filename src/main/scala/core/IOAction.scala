@@ -17,14 +17,14 @@ trait IOAction[T] {
   private def closeReader(r: T): IOMonad[Unit] = IOMonad(getAdapter(r).close())
 
   private def contentReader[A](r: T, it: Consumer[StringArray, A]): IOMonad[Consumer[StringArray, A]] = {
-    def loop: Consumer[StringArray, A] => IOMonad[Consumer[StringArray, A]] = {
+    def loop(lineNumber: Int): Consumer[StringArray, A] => IOMonad[Consumer[StringArray, A]] = {
       case i @ Done(_, _) => IOMonad(i)
       case i @ Cont(k) => for {
         s <- IOMonad(getAdapter(r).readLine())
-        a <- if (s == null) IOMonad(i) else loop(k(Element(s)))
+        a <- if (s == null) IOMonad(i) else loop(lineNumber + 1)(k(Element(s, lineNumber)))
       } yield a
     }
-    loop(it)
+    loop(1)(it)
   }
 
   private def combine[A,B,C](ioInit: IOMonad[A], ioEnd: A => IOMonad[B], body: A => IOMonad[C]): IOMonad[C] =

@@ -17,7 +17,7 @@ class ConsumerOperation$Test extends FunSuite {
     def enumerate[E,A]: (List[E], Consumer[E,A]) => Consumer[E,A] = {
       case (Nil, i) => i
       case (_, i@Done(_, _)) => i
-      case (x :: xs, Cont(k)) => enumerate(xs, k(Element(x)))
+      case (x :: xs, Cont(k)) => enumerate(xs, k(Element(x, 0)))
     }
 
 
