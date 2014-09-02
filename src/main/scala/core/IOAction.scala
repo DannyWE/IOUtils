@@ -1,6 +1,7 @@
 package core
 
 import java.io.File
+import scala.annotation.tailrec
 
 
 trait IOReader {

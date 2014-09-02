@@ -9,7 +9,7 @@ public class SimpleSpec {
 
     public static void main(String[] args) {
 
-        File file = new File("C:\\workspace\\spike\\dummy.txt");
+        File file = new File("/Users/xueli/Desktop/project/IOUtils/src/integration-test/resources/ApprovedInverter_Short.csv");
 
 
         String tempLine = null;
@@ -23,7 +23,7 @@ public class SimpleSpec {
                 lineCount += 1;
             }
 
-            System.out.println(list);
+            System.out.println(list.size());
         } catch (Exception e) {
             System.out.println("br error: " + e.getMessage());
 

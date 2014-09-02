@@ -29,6 +29,9 @@ class CsvIntegrationTest extends FunSuite {
     assert(containers.head.series == "EnerSolis")
     assert(containers.head.modelNumber == "ES3300")
     assert(containers.head.acPower == "3000")
+
+    println(containers.size)
+    containers.foreach(println)
 //    assert(containers.head.approvedDate == "")
 //    assert(containers.head.expiredDate == "")
 
@@ -37,6 +40,8 @@ class CsvIntegrationTest extends FunSuite {
 
     assert(header.head._2.manufacturer == "Manufacturer")
     assert(header.head._1 == 1)
+
+
 
   }
 

@@ -1,5 +1,7 @@
 package core
 
+import scala.annotation.tailrec
+
 object ConsumerOperation {
 
 

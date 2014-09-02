@@ -11,7 +11,8 @@ libraryDependencies ++= Seq(
   "net.sf.opencsv" % "opencsv" % "2.0",
   "org.scalaz" % "scalaz-core_2.10" % "7.1.0-M5",
   "javax.validation" % "validation-api" % "1.0.0.GA",
-  "org.hibernate" % "hibernate-validator" % "4.2.0.Final"
+  "org.hibernate" % "hibernate-validator" % "4.2.0.Final",
+  "org.scalaz.stream" %% "scalaz-stream" % "0.5a"
 //  "org.hibernate" % "hibernate-validator" % "5.0.1.Final",
 //  "javax.el" % "el-api" % "2.2",
 //  "org.glassfish.web" % "el-impl" % "2.2.1-b05"
@@ -33,4 +34,5 @@ libraryDependencies ++= Seq(
 //  "org.json4s" % "json4s-native_2.10" % "3.2.10",
 //  "org.json4s" % "json4s-jackson_2.10" % "3.2.10"
 )
-    
+
+resolvers += "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases"
