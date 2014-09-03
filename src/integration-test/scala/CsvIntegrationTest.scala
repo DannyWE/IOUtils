@@ -2,7 +2,7 @@ import core._
 import java.io.{FileReader, BufferedReader, File}
 import java.util.Date
 
-import app.CsvUtils
+import app.{CsvStreamProcessor, Container, CsvUtils}
 import javax.validation.ConstraintViolation
 import org.hibernate.validator.constraints.NotEmpty
 import org.scalatest.FunSuite
@@ -65,6 +65,22 @@ class CsvIntegrationTest extends FunSuite {
     assert(row._2.size == 1)
     assert(row._2.head.getPropertyPath.toString == "expiredDate")
     assert(row._2.head.getMessage == "may not be empty")
+
+  }
+
+  test("whatever") {
+
+    def f(x: StringArray): Container = Container(x(0), x(1), x(2), x(3), x(4), x(5))
+
+    def fValue(x: StringArray): ValueObject = new ValueObject(x(0), x(1), x(2), x(3), x(4), x(5))
+
+    //    val validResult = CsvStreamProcessor.parse(new File("/Users/xueli/Desktop/project/IOUtils/src/integration-test/resources/ApprovedInverter_Short.csv"), f)
+    //
+    //    println(validResult.left.get.size)
+
+    val invalidResult = CsvStreamProcessor.parse(new File("/Users/xueli/Desktop/project/IOUtils/src/integration-test/resources/ApprovedInverter_invalid.csv"), fValue)
+
+    println(invalidResult.right.get)
 
   }
 

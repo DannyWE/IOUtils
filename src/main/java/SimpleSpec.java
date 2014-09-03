@@ -16,6 +16,7 @@ public class SimpleSpec {
         BufferedReader br = null;
         List<String> list = new ArrayList<>();
         int lineCount = 0;
+        System.out.println(System.currentTimeMillis());
         try {
             br = new BufferedReader(new FileReader(file));
             while ((tempLine = br.readLine()) != null) {
@@ -24,6 +25,7 @@ public class SimpleSpec {
             }
 
             System.out.println(list.size());
+            System.out.println(System.currentTimeMillis());
         } catch (Exception e) {
             System.out.println("br error: " + e.getMessage());
 
