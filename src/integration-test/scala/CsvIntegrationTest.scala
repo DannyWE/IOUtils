@@ -2,7 +2,7 @@ import core._
 import java.io.{FileReader, BufferedReader, File}
 import java.util.Date
 
-import app.{CsvStreamProcessor, Container, CsvUtils}
+import app.{StreamProcessor, Container, CsvUtils}
 import javax.validation.ConstraintViolation
 import org.hibernate.validator.constraints.NotEmpty
 import org.scalatest.FunSuite
@@ -78,7 +78,7 @@ class CsvIntegrationTest extends FunSuite {
     //
     //    println(validResult.left.get.size)
 
-    val invalidResult = CsvStreamProcessor.parse(new File("/Users/xueli/Desktop/project/IOUtils/src/integration-test/resources/ApprovedInverter_invalid.csv"), fValue)
+    val invalidResult = StreamProcessor.parse(new File("/Users/xueli/Desktop/project/IOUtils/src/integration-test/resources/ApprovedInverter_invalid.csv"), fValue)
 
     println(invalidResult.right.get)
 

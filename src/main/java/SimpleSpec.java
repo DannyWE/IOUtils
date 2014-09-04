@@ -9,7 +9,7 @@ public class SimpleSpec {
 
     public static void main(String[] args) {
 
-        File file = new File("/Users/xueli/Desktop/project/IOUtils/src/integration-test/resources/ApprovedInverter_Short.csv");
+        File file = new File("C:\\workspace\\spike\\dummy.txt");
 
 
         String tempLine = null;
