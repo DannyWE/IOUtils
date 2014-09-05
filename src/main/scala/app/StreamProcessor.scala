@@ -49,7 +49,7 @@ object StreamProcessor {
     val validationSeq: Seq[(Int, Set[ConstraintViolation[T]])] = seq.map(t => (t._2, validator.validate(t._1).toSet))
 
     validationSeq match {
-      case x: Seq[(Int, ConstraintViolation[T])] if x.filter(p => !p._2.isEmpty).isEmpty => Left(seq.map(_._1))
+      case x: Seq[(Int, ConstraintViolation[T])] if x.filter(p => p._2.nonEmpty).isEmpty => Left(seq.map(_._1))
       case _ => Right(validationSeq)
     }
   }
