@@ -14,6 +14,7 @@ import Scalaz._
 import core._
 import app.Container
 import scala.collection.JavaConversions._
+import builder.StreamOperationBuilder
 
 object StreamProcessor {
 
@@ -30,7 +31,7 @@ object StreamProcessor {
 
   }
 
-  def parseCsvFile[T](file: File, f: StringArray => T): Either[Seq[T], Seq[(Int, Set[ConstraintViolation[T]])]] = {
+  def transform[T](file: File, f: StringArray => T): Process[Task, (T, Int)] = {
     val reader: CSVReader = new CSVReader(new FileReader(file))
 
     def mapToT: StringArray => Task[T] = t => Task(f(t))
@@ -39,7 +40,13 @@ object StreamProcessor {
 
     val channel = Process.constant(mapToT)
 
-    val voSeq = (result through channel).zipWithIndex.map(t => (t._1, t._2 + 1)).runLog.run
+    (result through channel).zipWithIndex.map(t => (t._1, t._2 + 1))
+
+  }
+  
+
+  def appendValidation[T](process: Process[Task, (T, Int)]): Either[Seq[T], Seq[(Int, Set[ConstraintViolation[T]])]] = {
+    val voSeq = process.runLog.run
 
     checkValidation(voSeq)
   }
@@ -58,11 +65,11 @@ object StreamProcessor {
 
     def f(x: StringArray): Container = Container(x(0), x(1), x(2), x(3), x(4), x(5))
 
-    var fileName = "C:\\workspace\\git\\IOUtils\\src\\integration-test\\resources\\ApprovedInverter_Long.csv"
+    var fileName = "/Users/xueli/Desktop/project/IOUtils/src/integration-test/resources/ApprovedInverter_Short.csv"
 
-    val result = StreamProcessor.parseCsvFile(new File(fileName), f)
+    val result = StreamProcessor.transform(new File(fileName), f)
 
-    println(result.left.get.size)
+//    println(result.left.get.size)
 
   }
 

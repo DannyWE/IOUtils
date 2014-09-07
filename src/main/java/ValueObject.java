@@ -27,6 +27,15 @@ public class ValueObject {
         this.expiredDate = expiredDate;
     }
 
+    public ValueObject(String[] input) {
+        this.manufacturer = input[0];
+        this.series = input[1];
+        this.modelNumber = input[2];
+        this.acPower = input[3];
+        this.approvedDate = input[4];
+        this.expiredDate = input[5];
+    }
+
 
     public String getManufacturer() {
         return manufacturer;

@@ -78,9 +78,9 @@ class CsvIntegrationTest extends FunSuite {
     //
     //    println(validResult.left.get.size)
 
-    val invalidResult = StreamProcessor.parse(new File("/Users/xueli/Desktop/project/IOUtils/src/integration-test/resources/ApprovedInverter_invalid.csv"), fValue)
+    val invalidResult = StreamProcessor.transform(new File("/Users/xueli/Desktop/project/IOUtils/src/integration-test/resources/ApprovedInverter_invalid.csv"), fValue)
 
-    println(invalidResult.right.get)
+//    println(invalidResult.right.get)
 
   }
 
