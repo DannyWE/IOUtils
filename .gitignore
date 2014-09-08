@@ -16,7 +16,6 @@ out
 
 /sqlnet.log
 /db/libs/
-/web-test-automation/libs/
 META-INF
 
 *.iml
@@ -27,5 +26,5 @@ out/
 target/
 classes/
 jmeter.log
-bc-core/src/main/resources/database.properties.perf
 *~
+src/main/scala/notused

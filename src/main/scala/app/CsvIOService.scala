@@ -1,16 +1,15 @@
 package app
 
-import conversion.{ConverterUtils, Result}
 import java.io.File
 import com.google.common.base.Function
 import core._
 import conversion.Result
 import javax.validation.ConstraintViolation
 import conversion.ConverterUtils._
-import builder.StreamOperationBuilder
 import app.StreamProcessor._
 import scalaz.stream.Process
 import scalaz.concurrent.Task
+import base.Strategy
 
 
 class CsvIOService {
@@ -20,10 +19,21 @@ class CsvIOService {
     Result(processedResult)
   }
 
-  def parseCsvFile[T](file: File, f: Function[StringArray, T], opBuilder: (Process[Task, (T, Int)] => Process[Task, (T, Int)]) * ): Result[T] = {
-    val process: Process[Task, (T, Int)] = StreamProcessor.transform(file, f)
-    val operatedResult: Process[Task, (T, Int)] = opBuilder.foldLeft(process)((acc, ele) => ele(acc))
-    val processedResult: Either[Seq[T], Seq[(Int, Set[ConstraintViolation[T]])]] = appendValidation(operatedResult)
+  def parseCsvFile[T](file: File, f: Function[StringArray, T], ops: ProcessF[T] ): Result[T] = {
+    val operatedProcess: Process[Task, (T, Int)] = ops(StreamProcessor.transform(file, f))
+    val processedResult: Either[Seq[T], Seq[(Int, Set[ConstraintViolation[T]])]] = appendValidation(operatedProcess)
     Result(processedResult)
+  }
+
+  def parseCsvFileWithStrategy[T](file: File, f: Function[StringArray, T]): Result[T] = {
+    val operatedProcess: Process[Task, (T, Int)] = StreamProcessor.transform(file, f)
+    val validate: Seq[(Int, Set[ConstraintViolation[T]])] = StreamProcessor.streamValidate(operatedProcess)
+//    if(validate.nonEmpty) Result[T](Right(validate))
+//    else {
+
+    println(validate.size)
+      val processedResult: Either[Seq[T], Seq[(Int, Set[ConstraintViolation[T]])]] = appendValidation(operatedProcess)
+      Result(processedResult)
+//    }
   }
 }

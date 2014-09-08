@@ -2,19 +2,13 @@ package app
 
 import java.io.File
 import au.com.bytecode.opencsv.CSVReader
-import core.Consumer
 import javax.validation.{Validation, Validator, ConstraintViolation}
-import csv.CsvIO
-import core.ConsumerOperation._
 import scalaz.stream._
 import scalaz.concurrent.Task
-import java.io.{InputStream, FileReader, FileOutputStream, FileInputStream}
-import scalaz._
-import Scalaz._
+import java.io.{FileReader, FileInputStream}
 import core._
-import app.Container
 import scala.collection.JavaConversions._
-import builder.StreamOperationBuilder
+import java.util
 
 object StreamProcessor {
 
@@ -45,6 +39,16 @@ object StreamProcessor {
   }
   
 
+  def streamValidate[T](process: Process[Task, (T, Int)],
+                         buffer: Int = 1): Seq[(Int, Set[ConstraintViolation[T]])] = {
+    val errorRows: Process[Task, (Int, Set[ConstraintViolation[T]])] = process
+      .map(t => (t._2, validator.validate(t._1).toSet))
+      .filter(t => t._2.nonEmpty)
+      .take(buffer)
+
+    errorRows.runLog.run
+  }
+
   def appendValidation[T](process: Process[Task, (T, Int)]): Either[Seq[T], Seq[(Int, Set[ConstraintViolation[T]])]] = {
     val voSeq = process.runLog.run
 
@@ -59,18 +63,6 @@ object StreamProcessor {
       case x: Seq[(Int, ConstraintViolation[T])] if x.filter(p => p._2.nonEmpty).isEmpty => Left(seq.map(_._1))
       case _ => Right(validationSeq)
     }
-  }
-
-  def main(args: Array[String]) = {
-
-    def f(x: StringArray): Container = Container(x(0), x(1), x(2), x(3), x(4), x(5))
-
-    var fileName = "/Users/xueli/Desktop/project/IOUtils/src/integration-test/resources/ApprovedInverter_Short.csv"
-
-    val result = StreamProcessor.transform(new File(fileName), f)
-
-//    println(result.left.get.size)
-
   }
 
 }

@@ -2,17 +2,20 @@ package builder
 
 import scalaz.stream.Process
 import scalaz.concurrent.Task
+import core.ProcessF
 
-object StreamOperationBuilder {
+class StreamOperationBuilder[T] {
 
-
-  def drop[T](x: Int): Process[Task, (T, Int)] => Process[Task, (T, Int)] = { process =>
+  def drop(x: Int): ProcessF[T] = { process =>
     process.drop(x)
   }
 
-  def take[T](x: Int): Process[Task, (T, Int)] => Process[Task, (T, Int)] = { process =>
+  def take(x: Int): ProcessF[T] = { process =>
     process.take(x)
   }
 
+  def takeWhile(f: ((T, Int)) => Boolean): ProcessF[T] = { process =>
+    process.takeWhile(f)
+  }
 
 }

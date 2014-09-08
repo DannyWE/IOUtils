@@ -14,7 +14,8 @@ libraryDependencies ++= Seq(
   "org.hibernate" % "hibernate-validator" % "4.2.0.Final",
   "org.scalaz.stream" %% "scalaz-stream" % "0.5a",
   "com.google.guava" % "guava" % "17.0",
-  "com.google.code.findbugs" % "jsr305" % "1.3.9"
+  "com.google.code.findbugs" % "jsr305" % "1.3.9",
+  "junit" % "junit" % "4.10"
 //  "org.hibernate" % "hibernate-validator" % "5.0.1.Final",
 //  "javax.el" % "el-api" % "2.2",
 //  "org.glassfish.web" % "el-impl" % "2.2.1-b05"

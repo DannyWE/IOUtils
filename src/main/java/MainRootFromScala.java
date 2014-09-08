@@ -4,9 +4,7 @@ import java.io.File;
 import java.util.List;
 
 import builder.StreamOperationBuilder;
-import com.google.common.base.Function;
 import conversion.Result;
-import static builder.StreamOperationBuilder.*;
 
 
 public class MainRootFromScala {
@@ -16,7 +14,10 @@ public class MainRootFromScala {
     public static void main(String[] args) {
         CsvIOService service = new CsvIOService();
         File file = new File("/Users/xueli/Desktop/project/IOUtils/src/integration-test/resources/ApprovedInverter_Long.csv");
-        Result<ValueObject> result = service.parseCsvFile(file, ValueObject::new, drop(1500));
+
+        StreamOperationBuilder<ValueObject> builder = new StreamOperationBuilder<>();
+
+        Result<ValueObject> result = service.parseCsvFile(file, ValueObject::new, builder.drop(1500).andThen(builder.take(100)));
 
         System.out.println(result.isSuccessful());
 

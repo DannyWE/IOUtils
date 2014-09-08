@@ -1,12 +1,12 @@
-package app
+package notused
 
 import java.io.File
-import core.Consumer
+import core._
 import csv.CsvIO
 import core.ConsumerOperation._
-import javax.validation.{Validator, Validation, ValidatorFactory, ConstraintViolation}
-import scala.collection.mutable
-import java.util
+import javax.validation.{Validator, Validation, ConstraintViolation}
+import notused.Container
+import app.StreamProcessor
 
 //import java.util.{Set => JSet}
 import scala.collection.JavaConversions._
@@ -33,6 +33,18 @@ object CsvUtils {
   def parse[T](file: File, f: Array[String] => T): Seq[(Int, T)] = {
 
     CsvIO.enumerateFile(file, map(f)).evaluate.run
+
+  }
+
+  def main(args: Array[String]) = {
+
+    def f(x: StringArray): Container = Container(x(0), x(1), x(2), x(3), x(4), x(5))
+
+    var fileName = "/Users/xueli/Desktop/project/IOUtils/src/integration-test/resources/ApprovedInverter_Short.csv"
+
+    val result = StreamProcessor.transform(new File(fileName), f)
+
+    //    println(result.left.get.size)
 
   }
 }

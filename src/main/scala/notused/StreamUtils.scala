@@ -1,13 +1,10 @@
-package app
+package notused
+
 import scalaz.stream._
 import scalaz.concurrent.Task
 import java.io._
-import scalaz._
-import Scalaz._
 import core._
-import app.Container
 import au.com.bytecode.opencsv.CSVReader
-import scala.collection.JavaConversions._
 
 
 object StreamUtils {
@@ -17,7 +14,7 @@ object StreamUtils {
   def parse() = {
 
 //    def f(x: StringArray): Container = Container(x(0), x(1), x(2), x(3), x(4), x(5))
-    def f(x: StringArray): Container = Container(x(0))
+    def f(x: StringArray): Container3 = Container3(x(0))
 //
 //    io.linesR(new FileInputStream("/Users/xueli/Desktop/project/IOUtils/src/integration-test/resources/ApprovedInverter_Short.csv"))
 //      .filter(s => !s.trim.isEmpty && !s.startsWith("//"))
@@ -43,7 +40,7 @@ object StreamUtils {
 //    Process.fol
 
 
-    val mapToContainer: StringArray => Task[Container] = x => Task({
+    val mapToContainer: StringArray => Task[Container3] = x => Task({
       println(f(x))
       f(x)
     })
@@ -118,7 +115,7 @@ object StreamUtils {
 
 
 }
-case class Container(manufacturer: String,
+case class Container3(manufacturer: String,
                      series: String = "",
                      modelNumber: String = "",
                      acPower: String = "",
