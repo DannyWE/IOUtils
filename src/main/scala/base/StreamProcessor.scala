@@ -66,9 +66,14 @@ object StreamProcessor {
 
   def write[T](it: Iterator[T], f: T => StringArray, writer: java.io.Writer): Unit = {
     val csvWriter: CSVWriter = new CSVWriter(writer)
-    Process.repeatEval(
-      Task {it.next}
-    ).takeThrough(t => t == null).map(f).map(t => csvWriter.writeNext(t)).run.run
+    //takeThrough(t => t == null).map(f).map(t => csvWriter.writeNext(t)).run
+    def mapToT: T => Task[StringArray] = t => Task(f(t))
+
+    val result: Process[Task, T] = Process.repeatEval(Task{it.next}).takeThrough(t => t == null)
+
+    val channel = Process.constant(mapToT)
+
+    (result through channel).map(t => csvWriter.writeNext(t)).run.run
 
     csvWriter.close()
 
