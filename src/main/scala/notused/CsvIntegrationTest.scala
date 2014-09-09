@@ -1,10 +1,9 @@
 package notused
 
+import base.StreamProcessor
 import core._
 import java.io.{FileReader, BufferedReader, File}
 import java.util.Date
-
-import app.StreamProcessor
 import javax.validation.ConstraintViolation
 import notused.CsvUtils
 import org.hibernate.validator.constraints.NotEmpty

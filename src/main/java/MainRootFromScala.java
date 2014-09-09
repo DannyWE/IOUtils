@@ -1,10 +1,9 @@
-import app.CsvIOService;
+import app.CsvService;
+import builder.StreamOperationBuilder;
+import conversion.Result;
 
 import java.io.File;
 import java.util.List;
-
-import builder.StreamOperationBuilder;
-import conversion.Result;
 
 
 public class MainRootFromScala {
@@ -12,12 +11,12 @@ public class MainRootFromScala {
 
 
     public static void main(String[] args) {
-        CsvIOService service = new CsvIOService();
+        CsvService service = new CsvService();
         File file = new File("/Users/xueli/Desktop/project/IOUtils/src/integration-test/resources/ApprovedInverter_Long.csv");
 
         StreamOperationBuilder<ValueObject> builder = new StreamOperationBuilder<>();
 
-        Result<ValueObject> result = service.parseCsvFile(file, ValueObject::new, builder.drop(1500).andThen(builder.take(100)));
+        Result<ValueObject> result = service.parse(file, ValueObject::new, builder.drop(1500).andThen(builder.take(100)));
 
         System.out.println(result.isSuccessful());
 

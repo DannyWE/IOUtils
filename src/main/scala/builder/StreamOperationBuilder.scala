@@ -1,7 +1,5 @@
 package builder
 
-import scalaz.stream.Process
-import scalaz.concurrent.Task
 import core.ProcessF
 
 class StreamOperationBuilder[T] {

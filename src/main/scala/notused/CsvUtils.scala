@@ -1,12 +1,12 @@
 package notused
 
 import java.io.File
+import base.StreamProcessor
 import core._
 import csv.CsvIO
 import core.ConsumerOperation._
 import javax.validation.{Validator, Validation, ConstraintViolation}
 import notused.Container
-import app.StreamProcessor
 
 //import java.util.{Set => JSet}
 import scala.collection.JavaConversions._
@@ -42,7 +42,7 @@ object CsvUtils {
 
     var fileName = "/Users/xueli/Desktop/project/IOUtils/src/integration-test/resources/ApprovedInverter_Short.csv"
 
-    val result = StreamProcessor.transform(new File(fileName), f)
+//    val result = StreamProcessor.transform(new File(fileName), f)
 
     //    println(result.left.get.size)
 
