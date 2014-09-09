@@ -69,7 +69,7 @@ object StreamProcessor {
     //takeThrough(t => t == null).map(f).map(t => csvWriter.writeNext(t)).run
     def mapToT: T => Task[StringArray] = t => Task(f(t))
 
-    val result: Process[Task, T] = Process.repeatEval(Task{it.next}).takeThrough(t => t == null)
+    val result: Process[Task, T] = Process.repeatEval(Task{it.next}).takeWhile(t => t != null)
 
     val channel = Process.constant(mapToT)
 
