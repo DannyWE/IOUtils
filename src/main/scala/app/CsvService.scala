@@ -41,19 +41,19 @@ class CsvService {
     Result(StreamProcessor.validateWithBuffer(operatedProcess, buffer))
   }
 
-  def parseWithLimitedValidation[T](reader: Reader, f: Function[StringArray, T], buffer: Int = 1): Result[T] = {
-    val operatedProcess: Process[Task, (T, Int)] = StreamProcessor.transform(reader, f)
-    Result(StreamProcessor.validateWithBuffer(operatedProcess, buffer))
-  }
+//  def parseWithLimitedValidation[T](reader: Reader, f: Function[StringArray, T], buffer: Int = 1): Result[T] = {
+//    val operatedProcess: Process[Task, (T, Int)] = StreamProcessor.transform(reader, f)
+//    Result(StreamProcessor.validateWithBuffer(operatedProcess, buffer))
+//  }
 
   def parseWithLimitedValidation[T](file: File, f: Function[StringArray, T], ops: ProcessF[T], buffer: Int = 1): Result[T] = {
     val operatedProcess: Process[Task, (T, Int)] = ops(StreamProcessor.transform(file, f))
     Result(StreamProcessor.validateWithBuffer(operatedProcess, buffer))
   }
 
-  def parseWithLimitedValidation[T](reader: Reader, f: Function[StringArray, T], ops: ProcessF[T], buffer: Int = 1): Result[T] = {
-    val operatedProcess: Process[Task, (T, Int)] = ops(StreamProcessor.transform(reader, f))
-    Result(StreamProcessor.validateWithBuffer(operatedProcess, buffer))
-  }
+//  def parseWithLimitedValidation[T](reader: Reader, f: Function[StringArray, T], ops: ProcessF[T], buffer: Int = 1): Result[T] = {
+//    val operatedProcess: Process[Task, (T, Int)] = ops(StreamProcessor.transform(reader, f))
+//    Result(StreamProcessor.validateWithBuffer(operatedProcess, buffer))
+//  }
 
 }

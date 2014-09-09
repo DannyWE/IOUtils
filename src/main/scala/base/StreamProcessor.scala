@@ -1,9 +1,9 @@
 package base
 
-import java.io.{File, FileInputStream, FileReader, Reader}
+import java.io._
 import javax.validation.{ConstraintViolation, Validation, Validator}
 
-import au.com.bytecode.opencsv.CSVReader
+import au.com.bytecode.opencsv.{CSVWriter, CSVReader}
 import core._
 
 import scala.collection.JavaConversions._
@@ -61,6 +61,17 @@ object StreamProcessor {
     val voSeq = process.runLog.run
 
     checkValidation(voSeq)
+  }
+
+
+  def write[T](it: Iterator[T], f: T => StringArray, writer: java.io.Writer): Unit = {
+    val csvWriter: CSVWriter = new CSVWriter(writer)
+    Process.repeatEval(
+      Task {it.next}
+    ).takeThrough(t => t == null).map(f).map(t => csvWriter.writeNext(t)).run.run
+
+    csvWriter.close()
+
   }
 
   private def transformToT[T](csvReader: CSVReader, f: StringArray => T): Process[Task, (T, Int)] = {

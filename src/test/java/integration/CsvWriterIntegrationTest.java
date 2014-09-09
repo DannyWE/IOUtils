@@ -1,13 +1,15 @@
 package integration;
 
 import app.CsvWriterService;
+import com.google.common.base.Function;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
+import javax.annotation.Nullable;
+import java.io.*;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 public class CsvWriterIntegrationTest {
 
@@ -19,10 +21,15 @@ public class CsvWriterIntegrationTest {
     }
 
     @Test
-    public void shouldWriteToOutputStream() throws FileNotFoundException {
-        FileOutputStream fileOutputStream = new FileOutputStream("src/test/resources/output.csv");
+    public void shouldWriteToOutputStream() throws IOException {
+        BufferedWriter fileWriter = new BufferedWriter(new FileWriter("src/test/resources/output.csv"));
         BufferedReader reader = new BufferedReader(new FileReader("src/test/resources/users.csv"));
+        FileIteratorAdaptor adaptor = new FileIteratorAdaptor(reader);
 
-//        service.writeTOStream(reader, );
+
+        service.writeTOStream(adaptor, User::produce, fileWriter);
+
+        BufferedReader result = new BufferedReader(new FileReader("src/test/resources/output.csv"));
+        assertThat(result.readLine(), is("username,company,interest,team"));
     }
 }

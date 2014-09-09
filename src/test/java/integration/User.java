@@ -20,6 +20,10 @@ public class User {
         this.team = input[3];
     }
 
+    public String[] produce() {
+        return new String[] {name, company, interest, team};
+    }
+
 
     public String getName() {
         return name;

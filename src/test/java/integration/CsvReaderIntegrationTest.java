@@ -1,7 +1,6 @@
 package integration;
 
 import app.CsvService;
-import app.CsvReaderService;
 import builder.StreamOperationBuilder;
 import conversion.Result;
 import org.junit.Before;
@@ -21,18 +20,16 @@ import static org.junit.Assert.assertThat;
 
 public class CsvReaderIntegrationTest {
 
-    private CsvService fileService;
-    private CsvReaderService readerService;
+    private CsvService service;
 
     @Before
     public void setUp() throws Exception {
-        fileService = new CsvService();
-        readerService = new CsvReaderService();
+        service = new CsvService();
     }
 
     @Test
     public void shouldUseCsvServiceToParseReader() throws Exception {
-        Result<User> result = readerService.parse(new FileReader("src/test/resources/users.csv"), User::new);
+        Result<User> result = service.parse(new FileReader("src/test/resources/users.csv"), User::new);
 
         assertThat(result.isSuccessful(), is(true));
 
@@ -56,7 +53,7 @@ public class CsvReaderIntegrationTest {
     public void shouldUseCsvServiceToParseCsvFile() throws Exception {
         File file = new File("src/test/resources/users.csv");
 
-        Result<User> result = fileService.parse(file, User::new);
+        Result<User> result = service.parse(file, User::new);
 
         assertThat(result.isSuccessful(), is(true));
 
@@ -82,7 +79,7 @@ public class CsvReaderIntegrationTest {
 
         StreamOperationBuilder<User> builder = new StreamOperationBuilder<>();
 
-        Result<User> result = fileService.parse(file, User::new, builder.drop(1).andThen(builder.take(1)));
+        Result<User> result = service.parse(file, User::new, builder.drop(1).andThen(builder.take(1)));
 
         assertThat(result.isSuccessful(), is(true));
 
@@ -100,7 +97,7 @@ public class CsvReaderIntegrationTest {
     public void shouldUseCsvServiceToGetErrorsFromFile() throws Exception {
         File file = new File("src/test/resources/users_invalid_1_rows.csv");
 
-        Result<User> result = fileService.parse(file, User::new);
+        Result<User> result = service.parse(file, User::new);
 
         assertThat(result.isFailed(), is(true));
 
@@ -131,7 +128,7 @@ public class CsvReaderIntegrationTest {
     public void shouldUseCsvServiceToGetErrorsFromAllTheRows() throws Exception {
         File file = new File("src/test/resources/users_invalid_3_rows.csv");
 
-        Result<User> result = fileService.parse(file, User::new);
+        Result<User> result = service.parse(file, User::new);
 
         assertThat(result.isFailed(), is(true));
 
@@ -145,7 +142,7 @@ public class CsvReaderIntegrationTest {
     public void shouldUseCsvServiceWithBufferedValidation() {
         File file = new File("src/test/resources/users.csv");
 
-        Result<User> result = fileService.parseWithLimitedValidation(file, User::new, 3);
+        Result<User> result = service.parseWithLimitedValidation(file, User::new, 3);
 
         assertThat(result.isFailed(), is(false));
         assertThat(result.isSuccessful(), is(true));
@@ -155,7 +152,7 @@ public class CsvReaderIntegrationTest {
     public void shouldGetBufferedValidationResult() throws Exception {
         File file = new File("src/test/resources/users_invalid_3_rows.csv");
 
-        Result<User> result = fileService.parseWithLimitedValidation(file, User::new, 1);
+        Result<User> result = service.parseWithLimitedValidation(file, User::new, 1);
 
         assertThat(result.isFailed(), is(true));
 
@@ -163,7 +160,7 @@ public class CsvReaderIntegrationTest {
 
         assertThat(failureResult.size(), is(1));
 
-        Result<User> overflowResult = fileService.parseWithLimitedValidation(file, User::new, 4);
+        Result<User> overflowResult = service.parseWithLimitedValidation(file, User::new, 4);
 
         assertThat(overflowResult.getFailureResult().size(), is(3));
 
@@ -175,7 +172,7 @@ public class CsvReaderIntegrationTest {
 
         StreamOperationBuilder<User> builder = new StreamOperationBuilder<>();
 
-        Result<User> result = fileService.parseWithLimitedValidation(file,
+        Result<User> result = service.parseWithLimitedValidation(file,
                 User::new,
                 builder.drop(1).andThen(builder.take(1)),
                 3);
