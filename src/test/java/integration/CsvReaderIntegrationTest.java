@@ -1,6 +1,6 @@
 package integration;
 
-import app.CsvService;
+import appJava.CsvService;
 import builder.StreamOperationBuilder;
 import conversion.Result;
 import org.junit.Before;
@@ -142,7 +142,7 @@ public class CsvReaderIntegrationTest {
     public void shouldUseCsvServiceWithBufferedValidation() {
         File file = new File("src/test/resources/users.csv");
 
-        Result<User> result = service.parseWithLimitedValidation(file, User::new, 3);
+        Result<User> result = service.parse(file, User::new, 3);
 
         assertThat(result.isFailed(), is(false));
         assertThat(result.isSuccessful(), is(true));
@@ -152,7 +152,7 @@ public class CsvReaderIntegrationTest {
     public void shouldGetBufferedValidationResult() throws Exception {
         File file = new File("src/test/resources/users_invalid_3_rows.csv");
 
-        Result<User> result = service.parseWithLimitedValidation(file, User::new, 1);
+        Result<User> result = service.parse(file, User::new, 1);
 
         assertThat(result.isFailed(), is(true));
 
@@ -160,7 +160,7 @@ public class CsvReaderIntegrationTest {
 
         assertThat(failureResult.size(), is(1));
 
-        Result<User> overflowResult = service.parseWithLimitedValidation(file, User::new, 4);
+        Result<User> overflowResult = service.parse(file, User::new, 4);
 
         assertThat(overflowResult.getFailureResult().size(), is(3));
 
@@ -172,7 +172,7 @@ public class CsvReaderIntegrationTest {
 
         StreamOperationBuilder<User> builder = new StreamOperationBuilder<>();
 
-        Result<User> result = service.parseWithLimitedValidation(file,
+        Result<User> result = service.parse(file,
                 User::new,
                 builder.drop(1).andThen(builder.take(1)),
                 3);
