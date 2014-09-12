@@ -1,6 +1,6 @@
 import appJava.CsvService;
 import builder.StreamOperationBuilder;
-import conversion.Result;
+import vo.Result;
 
 import java.io.File;
 import java.util.List;

@@ -2,17 +2,17 @@ package integration;
 
 import appJava.CsvService;
 import builder.StreamOperationBuilder;
-import conversion.Result;
+import com.google.common.base.CaseFormat;
 import org.junit.Before;
 import org.junit.Test;
+import vo.ErrorContainer;
+import vo.Result;
 
 import javax.validation.ConstraintViolation;
 import java.io.File;
 import java.io.FileReader;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -101,13 +101,13 @@ public class CsvReaderIntegrationTest {
 
         assertThat(result.isFailed(), is(true));
 
-        Map<Integer, Set<ConstraintViolation<User>>> failureResult = result.getFailureResult();
+        List<ErrorContainer<User>> failureResult = result.getFailureResult();
 
         assertThat(failureResult.size(), is(1));
 
-        assertThat(failureResult.get(3).size(), is(3));
+        assertThat(failureResult.get(0).getConstraintViolation().size(), is(3));
 
-        Iterator<ConstraintViolation<User>> iterator = failureResult.get(3).iterator();
+        Iterator<ConstraintViolation<User>> iterator = failureResult.get(0).getConstraintViolation().iterator();
 
         ConstraintViolation<User> company = iterator.next();
 
@@ -125,6 +125,21 @@ public class CsvReaderIntegrationTest {
     }
 
     @Test
+    public void shouldUseCsvServiceToGetSpecifiedColumnErrorMessage() throws Exception {
+        File file = new File("src/test/resources/users_invalid_1_rows.csv");
+
+        Result<User> result = service.parse(file, User::new);
+
+        assertThat(result.isFailed(), is(true));
+
+        String customizedErrorMessage = result.getCustomizedErrorMessage();
+
+        assertThat(customizedErrorMessage, is("Line 3 Column company may not be empty \n"
+            + "Line 3 Column interest may not be empty \n"
+            + "Line 3 Column team may not be empty"));
+    }
+
+    @Test
     public void shouldUseCsvServiceToGetErrorsFromAllTheRows() throws Exception {
         File file = new File("src/test/resources/users_invalid_3_rows.csv");
 
@@ -132,7 +147,13 @@ public class CsvReaderIntegrationTest {
 
         assertThat(result.isFailed(), is(true));
 
-        Map<Integer, Set<ConstraintViolation<User>>> failureResult = result.getFailureResult();
+        List<ErrorContainer<User>> failureResult = result.getFailureResult();
+
+        String testDataDataData123 = CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_HYPHEN, "testDataDataData123")
+                .replaceAll("-", " ");
+
+
+        System.out.println(testDataDataData123.substring(0, 1).toUpperCase() + testDataDataData123.substring(1));
 
         assertThat(failureResult.size(), is(3));
 
@@ -156,7 +177,7 @@ public class CsvReaderIntegrationTest {
 
         assertThat(result.isFailed(), is(true));
 
-        Map<Integer, Set<ConstraintViolation<User>>> failureResult = result.getFailureResult();
+        List<ErrorContainer<User>> failureResult = result.getFailureResult();
 
         assertThat(failureResult.size(), is(1));
 

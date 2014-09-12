@@ -2,8 +2,9 @@ package base
 
 import java.io.{Reader, File}
 import core._
-import conversion.Result
 import javax.validation.ConstraintViolation
+import vo.Result
+
 import scalaz.stream.Process
 import scalaz.concurrent.Task
 
@@ -12,16 +13,16 @@ trait ReaderService {
   def readerCreationModule: ReaderCreationModule
   def processModule: ProcessModule
 
-  type ReaderCreationModule = ReaderCreationModuleLike
+  type ReaderCreationModule <: ReaderCreationModuleLike
   
-  trait ReaderCreationModuleLike {
+  trait ReaderCreationModuleLike { this: ReaderCreationModule =>
     def getReader(file: File): ReaderLike
     def getReader(reader: Reader): ReaderLike
   }
   
-  type ProcessModule = ProcessModuleLike
+  type ProcessModule <: ProcessModuleLike
 
-  trait ProcessModuleLike {
+  trait ProcessModuleLike { this: ProcessModule =>
     def validate[T](process: Process[Task, (T, Int)], buffer: Int): EitherResult[T]
     def transform[T](reader: ReaderLike, f: StringArray => T): Process[Task, (T, Int)]
     def validateAll[T](process: Process[Task, (T, Int)]): EitherResult[T]
