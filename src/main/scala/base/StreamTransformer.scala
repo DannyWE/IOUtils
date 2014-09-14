@@ -3,11 +3,12 @@ package base
 import core._
 import scalaz.stream.Process
 import scalaz.concurrent.Task
+import scala.util.Try
 
 trait StreamTransformer {
 
-  def transformT[T](reader: ReaderLike, f: StringArray => T): Process[Task, (T, Int)] = {
-    def mapToT: StringArray => Task[T] = t => Task(f(t))
+  def transformT[T](reader: ReaderLike, f: StringArray => T): Process[Task, (Try[T], Int)] = {
+    def mapToT: StringArray => Task[Try[T]] = t => Task(Try{f(t)})
 
     val result: Process[Task, StringArray] = Process.emitAll(reader.readAll())
 

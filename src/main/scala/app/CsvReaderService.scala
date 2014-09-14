@@ -1,26 +1,21 @@
 package app
 
 import java.io.{Reader, File}
-import com.google.common.base.Function
-import vo.Result
-import scala.Predef.Function
-import scala.Function
 import core._
-import javax.validation.{Validation, ConstraintViolation}
 import base._
 import scalaz.stream.Process
 import scalaz.concurrent.Task
-import csv.{CsvReaderAdaptor, CsvReaderCreator}
-import au.com.bytecode.opencsv.CSVReader
+import csv.CsvReaderAdaptor
+import scala.util.Try
 
 class CsvReaderService extends ReaderService with StreamTransformer {
 
-  val streamValidator: StreamValidator = new StreamValidator(Validation.buildDefaultValidatorFactory.getValidator)
+  val validationCollector: StreamValidationCollector = new StreamValidationCollector(javaxValidator)
 
   class ProcessModule extends ProcessModuleLike {
-    override def validateAll[T](process: Process[Task, (T, Int)]): EitherResult[T] = streamValidator.validateAll(process)
-    override def transform[T](reader: ReaderLike, f: (StringArray) => T): Process[Task, (T, Int)] = transformT(reader, f)
-    override def validate[T](process: Process[Task, (T, Int)], buffer: Int): EitherResult[T] = streamValidator.validate(process, buffer)
+    override def validateAll[T](process: Process[Task, (Try[T], Int)]): EitherResult[T] = validationCollector.validateAll(process)
+    override def transform[T](reader: ReaderLike, f: (StringArray) => T): Process[Task, (Try[T], Int)] = transformT(reader, f)
+    override def validate[T](process: Process[Task, (Try[T], Int)], buffer: Int): EitherResult[T] = validationCollector.validate(process, buffer)
   }
 
   class ReaderCreationModule extends ReaderCreationModuleLike {

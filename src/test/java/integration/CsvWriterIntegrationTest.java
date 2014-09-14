@@ -24,8 +24,8 @@ public class CsvWriterIntegrationTest {
 
     @Test
     public void shouldWriteToOutputStream() throws IOException {
-//        String fileName = "src/test/resources/users.csv";
-        String fileName = "C:\\workspace\\spike\\dummy.txt";
+        String fileName = "src/test/resources/users.csv";
+//        String fileName = "C:\\workspace\\spike\\dummy.txt";
         BufferedWriter fileWriter = new BufferedWriter(new FileWriter("src/test/resources/output.csv"));
         BufferedReader reader = new BufferedReader(new FileReader(fileName));
         FileIteratorAdaptor adaptor = new FileIteratorAdaptor(reader);

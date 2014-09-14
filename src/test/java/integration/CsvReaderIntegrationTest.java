@@ -2,13 +2,12 @@ package integration;
 
 import appJava.CsvService;
 import builder.StreamOperationBuilder;
-import com.google.common.base.CaseFormat;
 import org.junit.Before;
 import org.junit.Test;
-import vo.ErrorContainer;
+import vo.LineErrorConverter;
 import vo.Result;
+import vo.SimplifiedErrorContainer;
 
-import javax.validation.ConstraintViolation;
 import java.io.File;
 import java.io.FileReader;
 import java.util.Iterator;
@@ -17,6 +16,7 @@ import java.util.List;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
+import static org.junit.internal.matchers.StringContains.containsString;
 
 public class CsvReaderIntegrationTest {
 
@@ -101,27 +101,27 @@ public class CsvReaderIntegrationTest {
 
         assertThat(result.isFailed(), is(true));
 
-        List<ErrorContainer<User>> failureResult = result.getFailureResult();
+        List<LineErrorConverter> failureResult = result.getFailureResult();
 
         assertThat(failureResult.size(), is(1));
 
-        assertThat(failureResult.get(0).getConstraintViolation().size(), is(3));
+        assertThat(failureResult.get(0).getViolations().size(), is(3));
 
-        Iterator<ConstraintViolation<User>> iterator = failureResult.get(0).getConstraintViolation().iterator();
+        Iterator<SimplifiedErrorContainer> iterator = failureResult.get(0).getViolations().iterator();
 
-        ConstraintViolation<User> company = iterator.next();
+        SimplifiedErrorContainer company = iterator.next();
 
-        assertThat(company.getPropertyPath(), notNullValue());
-        assertThat(company.getMessage(), is("may not be empty"));
+        assertThat(company.columnName(), notNullValue());
+        assertThat(company.errorMessage(), is("may not be empty"));
 
-        ConstraintViolation<User> interest = iterator.next();
+        SimplifiedErrorContainer interest = iterator.next();
 
-        assertThat(interest.getPropertyPath(), notNullValue());
-        assertThat(interest.getMessage(), is("may not be empty"));
+        assertThat(interest.columnName(), notNullValue());
+        assertThat(interest.errorMessage(), is("may not be empty"));
 
-        ConstraintViolation<User> team = iterator.next();
-        assertThat(team.getPropertyPath(), notNullValue());
-        assertThat(team.getMessage(), is("may not be empty"));
+        SimplifiedErrorContainer team = iterator.next();
+        assertThat(team.columnName(), notNullValue());
+        assertThat(team.errorMessage(), is("may not be empty"));
     }
 
     @Test
@@ -132,11 +132,73 @@ public class CsvReaderIntegrationTest {
 
         assertThat(result.isFailed(), is(true));
 
-        String customizedErrorMessage = result.getCustomizedErrorMessage();
+        String customizedErrorMessage = result.getFormattedErrorMessage();
 
-        assertThat(customizedErrorMessage, is("Line 3 Column company may not be empty \n"
-            + "Line 3 Column interest may not be empty \n"
-            + "Line 3 Column team may not be empty"));
+        assertThat(customizedErrorMessage, is("Line 3 Column Company may not be empty.\n"
+            + "Line 3 Column Interest may not be empty.\n"
+            + "Line 3 Column Team may not be empty."));
+
+        assertThat(result.getFormattedErrorMessage((lineNumber, columnName, errorMessage) -> "", ""), is(""));
+    }
+
+    @Test
+    public void shouldUseCsvServiceAndColumnMapperToGetSpecifiedColumnErrorMessage() throws Exception {
+        File file = new File("src/test/resources/users_invalid_1_rows_sorted.csv");
+
+        Result<User> result = service.parse(file, User::new);
+
+        assertThat(result.isFailed(), is(true));
+
+        String customizedErrorMessage = result.getSortedFormattedErrorMessage(new SortedColumnMapper());
+
+        assertThat(customizedErrorMessage, is("Line 3 Column User name may not be empty.\n"
+                + "Line 3 Column Company may not be empty.\n"
+                + "Line 3 Column Interest may not be empty.\n"
+                + "Line 3 Column Team may not be empty."));
+    }
+
+    @Test
+    public void shouldUseCsvServiceToShowMissingColumnsByUsingSortedFormattedErrorMessage() throws Exception {
+        File file = new File("src/test/resources/users_invalid_3_missing_column.csv");
+
+        Result<User> result = service.parse(file, User::new);
+
+        assertThat(result.isFailed(), is(true));
+
+        String customizedErrorMessage = result.getSortedFormattedErrorMessage(new SortedColumnMapper());
+
+        assertThat(customizedErrorMessage, containsString("Line 3 may have missing columns"));
+        assertThat(customizedErrorMessage, containsString("Line 4 may have missing columns"));
+        assertThat(customizedErrorMessage, containsString("Line 5 may have missing columns"));
+    }
+
+    @Test
+    public void shouldUseCsvServiceToShowMissingColumnsByUsingFormattedErrorMessage() throws Exception {
+        File file = new File("src/test/resources/users_invalid_3_missing_column.csv");
+
+        Result<User> result = service.parse(file, User::new);
+
+        assertThat(result.isFailed(), is(true));
+
+        String customizedErrorMessage = result.getFormattedErrorMessage();
+
+        assertThat(customizedErrorMessage, containsString("Line 3 may have missing columns"));
+        assertThat(customizedErrorMessage, containsString("Line 4 may have missing columns"));
+        assertThat(customizedErrorMessage, containsString("Line 5 may have missing columns"));
+    }
+
+    @Test
+    public void shouldUseCsvServiceToShowMissingColumnsAndColumnErrorMessage() throws Exception {
+        File file = new File("src/test/resources/users_invalid_1_row_column_errors.csv");
+
+        Result<User> result = service.parse(file, User::new);
+
+        assertThat(result.isFailed(), is(true));
+
+        String customizedErrorMessage = result.getSortedFormattedErrorMessage(new SortedColumnMapper());
+
+        assertThat(customizedErrorMessage, containsString("Line 3 may have missing columns"));
+        assertThat(customizedErrorMessage, containsString("Line 4 Column Company may not be empty."));
     }
 
     @Test
@@ -147,16 +209,16 @@ public class CsvReaderIntegrationTest {
 
         assertThat(result.isFailed(), is(true));
 
-        List<ErrorContainer<User>> failureResult = result.getFailureResult();
-
-        String testDataDataData123 = CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_HYPHEN, "testDataDataData123")
-                .replaceAll("-", " ");
-
-
-        System.out.println(testDataDataData123.substring(0, 1).toUpperCase() + testDataDataData123.substring(1));
+        List<LineErrorConverter> failureResult = result.getFailureResult();
 
         assertThat(failureResult.size(), is(3));
 
+        String formattedErrorMessage = result.getFormattedErrorMessage();
+
+        assertThat(formattedErrorMessage, containsString("Line 3 Column Interest may not be empty."));
+        assertThat(formattedErrorMessage, containsString("Line 3 Column Team may not be empty."));
+        assertThat(formattedErrorMessage, containsString("Line 4 Column Interest may not be empty."));
+        assertThat(formattedErrorMessage, containsString("Line 5 Column Team may not be empty."));
     }
 
     @Test
@@ -177,7 +239,7 @@ public class CsvReaderIntegrationTest {
 
         assertThat(result.isFailed(), is(true));
 
-        List<ErrorContainer<User>> failureResult = result.getFailureResult();
+        List<LineErrorConverter> failureResult = result.getFailureResult();
 
         assertThat(failureResult.size(), is(1));
 

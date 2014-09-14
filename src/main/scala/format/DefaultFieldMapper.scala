@@ -4,7 +4,7 @@ import com.google.common.base.CaseFormat
 
 import scala.util.{Success, Try}
 
-object DefaultFieldMapper extends Mapper[String] {
+object DefaultFieldMapper extends Mapper[String, String] {
   override def mapTo(field: String): String = {
     val convertedField = Try {
       val lowercaseHeader = CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_HYPHEN, field).replaceAll("-", " ")

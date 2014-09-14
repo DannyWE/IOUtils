@@ -1,6 +1,7 @@
 package builder
 
 import core.ProcessF
+import scala.util.Try
 
 class StreamOperationBuilder[T] {
 
@@ -12,7 +13,7 @@ class StreamOperationBuilder[T] {
     process.take(x)
   }
 
-  def takeWhile(f: ((T, Int)) => Boolean): ProcessF[T] = { process =>
+  def takeWhile(f: ((Try[T], Int)) => Boolean): ProcessF[T] = { process =>
     process.takeWhile(f)
   }
 

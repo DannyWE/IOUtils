@@ -1,5 +1,5 @@
 package format
 
-trait Mapper[T] {
-  def mapTo(x: T): T
+trait Mapper[T, W] {
+  def mapTo(x: T): W
 }

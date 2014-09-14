@@ -12,7 +12,7 @@ import scalaz.stream._
 
 object StreamProcessor {
 
-  val streamValidator: StreamValidator = new StreamValidator(Validation.buildDefaultValidatorFactory.getValidator)
+//  val streamValidator: StreamValidationCollector = new StreamValidationCollector(Validation.buildDefaultValidatorFactory.getValidator)
 
 
 //  def getCsvReader(file: File): CSVReader = new CSVReader(new FileReader(file))
@@ -35,9 +35,9 @@ object StreamProcessor {
   def write[T](it: Iterator[T], f: T => StringArray, writer: java.io.Writer): Unit = {
     val csvWriter: CSVWriter = new CSVWriter(writer)
     //takeThrough(t => t == null).map(f).map(t => csvWriter.writeNext(t)).run
-    def mapToT: T => Task[StringArray] = t => Task(f(t))
+    def mapToT: Next[T] => Task[StringArray] = t => Task(f(t.get))
 
-    val result: Process[Task, T] = Process.repeatEval(Task{it.next}).takeWhile(t => t != null)
+    val result: Process[Task, Next[T]] = Process.repeatEval(Task{it.next}).takeWhile(t => !t.shouldStop)
 
     val channel = Process.constant(mapToT)
 

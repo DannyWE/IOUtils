@@ -1,6 +1,10 @@
 package integration;
 
 import base.Iterator;
+import base.Next;
+import base.Stop;
+import scala.util.Either;
+import scala.util.Right;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -22,11 +26,16 @@ public class FileIteratorAdaptor implements Iterator<User> {
 
 
     @Override
-    public User next() throws IOException {
+    public Next<User> next() throws IOException {
         String s = bufferedReader.readLine();
         System.out.println(s);
-        if (s == null) return null;
-        return new User(s.split(","));
+        if (s == null) return new Stop();
+        return new Next<>(new User(s.split(",")));
+
+//        String s = bufferedReader.readLine();
+//        System.out.println(s);
+//        if (s == null) return new Stop;
+//        return new User(s.split(","));
     }
 
     @Override
