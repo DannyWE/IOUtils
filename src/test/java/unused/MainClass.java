@@ -1,3 +1,5 @@
+package unused;
+
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;

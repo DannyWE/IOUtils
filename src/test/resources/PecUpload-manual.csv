@@ -1,0 +1,6 @@
+PEC ID,EITE entity,Assessment year,Liable entity account number,EITE activity,Partial exemption,Cancelled flag
+1,any eite,2013,102,any activity,32,true
+2,any eite,2013,102,any activity,32,N
+3,any eite,2013,102,any activity,50,N
+4,any eite,2013,102,any activity,50,Y
+5,"So'-m#*&",2013,102,"@'-&*( Farming",40,N

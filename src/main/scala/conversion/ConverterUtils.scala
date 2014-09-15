@@ -14,4 +14,9 @@ object ConverterUtils {
     fFromScala
   }
 
+  implicit def convertTToBoolean[T](f: Function[T, Boolean]): T => Boolean = {
+    val fFromScala: T => Boolean = { t => f.apply(t)}
+    fFromScala
+  }
+
 }

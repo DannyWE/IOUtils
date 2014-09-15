@@ -9,6 +9,7 @@ import vo.Result;
 import vo.SimplifiedErrorContainer;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.Iterator;
 import java.util.List;
@@ -27,6 +28,50 @@ public class CsvReaderIntegrationTest {
         service = new CsvService();
     }
 
+    @Test
+    public void shouldUseCsvServiceToParsePecUploadFile() throws FileNotFoundException {
+        StreamOperationBuilder<Pec> builder = new StreamOperationBuilder<>();
+
+        Result<Pec> result = service.parse(new FileReader("src/test/resources/PecUpload-manual.csv"), Pec::new, builder.drop(1));
+
+        if (result.isSuccessful()) {
+            System.out.println(result.getResult());
+        } else {
+            System.out.println(result.getFormattedErrorMessage());
+        }
+
+    }
+
+    @Test
+     public void shouldUseCsvServiceToParsePecUploadFileWithInvalidData() throws FileNotFoundException {
+        StreamOperationBuilder<Pec> builder = new StreamOperationBuilder<>();
+
+        Result<Pec> result = service.parse(new FileReader("src/test/resources/PecUpload_invalid.csv"), Pec::new, builder.drop(1));
+
+        if (result.isSuccessful()) {
+            System.out.println(result.getResult());
+        } else {
+            System.out.println(result.getFormattedErrorMessage());
+        }
+
+    }
+
+    @Test
+    public void shouldUseCsvServiceToParsePecUploadFileWithInvalidDataByUsingTakeWhile() throws FileNotFoundException {
+        StreamOperationBuilder<Pec> builder = new StreamOperationBuilder<>();
+
+        Result<Pec> result = service.parse(new FileReader("src/test/resources/PecUpload_invalid.csv"),
+                Pec::new,
+                builder.drop(1).andThen(builder.takeWhile(t -> t.getPecId() != 4)));
+
+        if (result.isSuccessful()) {
+            System.out.println(result.getResult());
+        } else {
+            System.out.println(result.getFormattedErrorMessage());
+        }
+
+    }
+    
     @Test
     public void shouldUseCsvServiceToParseReader() throws Exception {
         Result<User> result = service.parse(new FileReader("src/test/resources/users.csv"), User::new);

@@ -47,12 +47,12 @@ case class Result[T](either: EitherResult[T]) {
 
   def getFormattedErrorMessage(formatter: ErrorLineFormatter = DefaultErrorLineFormatter, split: String = "\n"): String = {
     val result: Seq[SimplifiedErrorContainer] = getSimplifiedFailureResult(DefaultFieldMapper)
-    result.map(t => formatter.format(t.lineNumber, t.columnName, t.errorMessage)).mkString(split)
+    result.sortBy(_.lineNumber).map(t => formatter.format(t.lineNumber, t.columnName, t.errorMessage)).mkString(split)
   }
 
   def getSortedFormattedErrorMessage(mapper: Mapper[String, SortedColumn], formatter: ErrorLineFormatter = DefaultErrorLineFormatter, split: String = "\n"): String = {
     val result: Seq[SimplifiedErrorContainer] = getSortedSimplifiedFailureResult(mapper)
-    result.map(t => formatter.format(t.lineNumber, t.columnName, t.errorMessage)).mkString(split)
+    result.sortBy(_.lineNumber).map(t => formatter.format(t.lineNumber, t.columnName, t.errorMessage)).mkString(split)
   }
 
   //for java

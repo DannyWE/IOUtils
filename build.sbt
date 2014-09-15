@@ -15,6 +15,9 @@ libraryDependencies ++= Seq(
   "org.scalaz.stream" %% "scalaz-stream" % "0.5a",
   "com.google.guava" % "guava" % "17.0",
   "com.google.code.findbugs" % "jsr305" % "1.3.9",
+  "org.slf4j" % "slf4j-log4j12" % "1.6.1",
+  "org.slf4j" % "slf4j-api" % "1.6.1",
+  "log4j" % "log4j" % "1.2.16",
   "junit" % "junit" % "4.10"
 //  "org.hibernate" % "hibernate-validator" % "5.0.1.Final",
 //  "javax.el" % "el-api" % "2.2",

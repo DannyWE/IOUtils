@@ -1,6 +1,6 @@
-import org.hibernate.validator.constraints.NotEmpty;
+package unused;
 
-import javax.validation.constraints.NotNull;
+import org.hibernate.validator.constraints.NotEmpty;
 
 public class ValueObject {
 
