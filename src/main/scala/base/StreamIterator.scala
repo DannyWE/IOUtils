@@ -1,6 +1,6 @@
 package base
 
-trait Iterator[T] {
+trait StreamIterator[T] {
 
 
 

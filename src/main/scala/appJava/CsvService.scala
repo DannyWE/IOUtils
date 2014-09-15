@@ -1,15 +1,10 @@
 package appJava
 
 import java.io.{Reader, File}
-import base.StreamProcessor
 import com.google.common.base.Function
 import core._
-import javax.validation.ConstraintViolation
 import conversion.ConverterUtils._
-import StreamProcessor._
 import vo.Result
-import scalaz.stream.Process
-import scalaz.concurrent.Task
 import app.CsvReaderService
 
 

@@ -65,6 +65,10 @@ case class Result[T](either: EitherResult[T]) {
     getFormattedErrorMessage(DefaultErrorLineFormatter, "\n")
   }
 
+  def getFormattedErrorMessage(formatter: ErrorLineFormatter): String = {
+    getFormattedErrorMessage(formatter, "\n")
+  }
+
   def getSortedFormattedErrorMessage(mapper: Mapper[String, SortedColumn], split: String): String = {
     getSortedFormattedErrorMessage(mapper, DefaultErrorLineFormatter, split)
   }

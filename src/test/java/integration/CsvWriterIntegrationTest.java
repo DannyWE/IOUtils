@@ -28,7 +28,7 @@ public class CsvWriterIntegrationTest {
 //        String fileName = "C:\\workspace\\spike\\dummy.txt";
         BufferedWriter fileWriter = new BufferedWriter(new FileWriter("src/test/resources/output.csv"));
         BufferedReader reader = new BufferedReader(new FileReader(fileName));
-        FileIteratorAdaptor adaptor = new FileIteratorAdaptor(reader);
+        FileStreamIteratorAdaptor adaptor = new FileStreamIteratorAdaptor(reader);
 
 
         service.writeTOStream(adaptor, User::produce, fileWriter);

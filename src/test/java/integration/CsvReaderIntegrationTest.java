@@ -2,6 +2,7 @@ package integration;
 
 import appJava.CsvService;
 import builder.StreamOperationBuilder;
+import format.ErrorLineFormatter;
 import org.junit.Before;
 import org.junit.Test;
 import vo.LineErrorConverter;
@@ -264,6 +265,13 @@ public class CsvReaderIntegrationTest {
         assertThat(formattedErrorMessage, containsString("Line 3 Column Team may not be empty."));
         assertThat(formattedErrorMessage, containsString("Line 4 Column Interest may not be empty."));
         assertThat(formattedErrorMessage, containsString("Line 5 Column Team may not be empty."));
+
+        String customizedErrorMessage = result.getFormattedErrorMessage(new CustomizedErrorLineFormatter());
+
+        assertThat(customizedErrorMessage, containsString("Column Interest in Line 3 has error: may not be empty"));
+        assertThat(customizedErrorMessage, containsString("Column Team in Line 3 has error: may not be empty"));
+        assertThat(customizedErrorMessage, containsString("Column Interest in Line 4 has error: may not be empty"));
+        assertThat(customizedErrorMessage, containsString("Column Team in Line 5 has error: may not be empty"));
     }
 
     @Test

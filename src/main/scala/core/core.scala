@@ -12,4 +12,6 @@ package object core {
 
   type EitherResult[T] = Either[Seq[T], Seq[LineConstraintViolation]]
 
+  type IteratorEitherResult[T] = Either[Iterator[T], Seq[LineConstraintViolation]]
+
 }

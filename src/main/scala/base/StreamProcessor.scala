@@ -32,7 +32,7 @@ object StreamProcessor {
 //  }
 
 
-  def write[T](it: Iterator[T], f: T => StringArray, writer: java.io.Writer): Unit = {
+  def write[T](it: StreamIterator[T], f: T => StringArray, writer: java.io.Writer): Unit = {
     val csvWriter: CSVWriter = new CSVWriter(writer)
     //takeThrough(t => t == null).map(f).map(t => csvWriter.writeNext(t)).run
     def mapToT: Next[T] => Task[StringArray] = t => Task(f(t.get))

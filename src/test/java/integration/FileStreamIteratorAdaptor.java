@@ -1,20 +1,17 @@
 package integration;
 
-import base.Iterator;
+import base.StreamIterator;
 import base.Next;
 import base.Stop;
-import scala.util.Either;
-import scala.util.Right;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 
-public class FileIteratorAdaptor implements Iterator<User> {
+public class FileStreamIteratorAdaptor implements StreamIterator<User> {
 
     private BufferedReader bufferedReader;
 
-    public FileIteratorAdaptor(BufferedReader bufferedReader) {
+    public FileStreamIteratorAdaptor(BufferedReader bufferedReader) {
 
         this.bufferedReader = bufferedReader;
     }
